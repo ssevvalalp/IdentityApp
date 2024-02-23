@@ -5,7 +5,7 @@ namespace IdentiyApp.Models
 {
     public class IdentitySeedData
     {
-        private const string adminUser = "Admin";
+        private const string adminUser = "admin";
         private const string adminPassword = "Admin_123";
 
         //program.cs'deki app bilgisini buraya parametre olarak göndercez
@@ -20,13 +20,14 @@ namespace IdentiyApp.Models
             }
             //hazır servisler
 
-            var userManager = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<UserManager<AppUser>>();
             var user = await userManager.FindByNameAsync(adminUser);
 
             if (user == null) {
 
-                user = new IdentityUser
+                user = new AppUser
                 {
+                    FullName = "Şevval Alp",
                     UserName = adminUser,
                     Email = "admin@admin.com",
                     PhoneNumber = "444444"

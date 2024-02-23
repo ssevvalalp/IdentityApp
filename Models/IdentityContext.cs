@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentiyApp.Models
 {
-    public class IdentityContext: IdentityDbContext<IdentityUser>
+    public class IdentityContext: IdentityDbContext<AppUser,AppRole, string>
 
     {
         //dışarıdan(development.json) options verilecek

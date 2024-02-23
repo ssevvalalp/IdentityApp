@@ -1,4 +1,5 @@
-﻿using IdentiyApp.ViewModels;
+﻿using IdentiyApp.Models;
+using IdentiyApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +11,8 @@ namespace IdentiyApp.Controllers
         //User List 
         //UserManager Class implementation
 
-        private UserManager<IdentityUser> _userManager;
-        public UsersController(UserManager<IdentityUser> userManager)
+        private UserManager<AppUser> _userManager;
+        public UsersController(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
         }
@@ -31,7 +32,7 @@ namespace IdentiyApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newUser = new IdentityUser { UserName = model.UserName, Email = model.Email };
+                var newUser = new AppUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
                
                IdentityResult result = await _userManager.CreateAsync(newUser, model.Password);
                 if (result.Succeeded)
