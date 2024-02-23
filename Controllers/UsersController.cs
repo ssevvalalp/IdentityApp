@@ -6,6 +6,7 @@ namespace IdentiyApp.Controllers
     public class UsersController : Controller
     {
 
+        //User List 
         //UserManager Class implementation
 
         private UserManager<IdentityUser> _userManager;
@@ -17,6 +18,11 @@ namespace IdentiyApp.Controllers
         public IActionResult Index()
         {
             return View(_userManager.Users);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
         }
     }
 }
