@@ -9,9 +9,9 @@ namespace IdentiyApp.Controllers
     {
 
         //User List 
-        //UserManager Class implementation
+        //UserManager'a Class implementation
 
-        private UserManager<AppUser> _userManager;
+        private UserManager<AppUser> _userManager; //<IdentityUser>
         public UsersController(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
@@ -35,7 +35,7 @@ namespace IdentiyApp.Controllers
                 var newUser = new AppUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
                
                IdentityResult result = await _userManager.CreateAsync(newUser, model.Password);
-                if (result.Succeeded)
+                if (result.Succeeded)//true
                 {
                     return RedirectToAction("Index");
                 }
@@ -47,5 +47,26 @@ namespace IdentiyApp.Controllers
             }
             return View(model);
         }
-    }
+
+        public async Task <IActionResult> Edit(string id)
+        {
+            if(id == null)
+            {
+                
+            }
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user != null) {
+                return View(new EditViewModel
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email
+
+                });
+            }
+            return RedirectToAction("Index");
+
+        }
+     }
 }
