@@ -8,7 +8,7 @@
             <th>Id</th>
             <th>Name</th>
             <th>Email</th>
-            <th></th>
+            <th style="width: 125px;"></th>
         </tr>
     </thead>
 
@@ -20,8 +20,9 @@
                 <td>@user.FullName</td>
                 <td>@user.Email</td>
                 <td>
+                    @* a-> inline form-> block etiket *@
                     <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a>
-                    <form asp-action="Delete" method="post" >
+                    <form asp-action="Delete" method="post" onsubmit="return confirm('emin misiniz?')" style="display: inline-block;">
                         <input type="hidden" value="@user.Id" name="Id">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
