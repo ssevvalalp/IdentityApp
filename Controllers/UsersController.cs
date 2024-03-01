@@ -52,7 +52,7 @@ namespace IdentiyApp.Controllers
         {
             if(id == null)
             {
-                
+                return RedirectToAction("Index");
             }
             var user = await _userManager.FindByIdAsync(id);
 
