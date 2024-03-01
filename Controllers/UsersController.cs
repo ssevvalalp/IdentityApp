@@ -33,30 +33,31 @@ namespace IdentiyApp.Controllers
             if (ModelState.IsValid)
             {
                 var newUser = new AppUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
-               
-               IdentityResult result = await _userManager.CreateAsync(newUser, model.Password);
+
+                IdentityResult result = await _userManager.CreateAsync(newUser, model.Password);
                 if (result.Succeeded)//true
                 {
                     return RedirectToAction("Index");
                 }
 
-                foreach(IdentityError err in result.Errors)
+                foreach (IdentityError err in result.Errors)
                 {
-                    ModelState.AddModelError("",err.Description);
+                    ModelState.AddModelError("", err.Description);
                 }
             }
             return View(model);
         }
 
-        public async Task <IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return RedirectToAction("Index");
             }
             var user = await _userManager.FindByIdAsync(id);
 
-            if (user != null) {
+            if (user != null)
+            {
                 return View(new EditViewModel
                 {
                     Id = user.Id,
@@ -70,11 +71,11 @@ namespace IdentiyApp.Controllers
         }
 
         [HttpPost]
-        public async Task <IActionResult> Edit(string id, EditViewModel model)
-           
+        public async Task<IActionResult> Edit(string id, EditViewModel model)
+
         {
             //modelden gelen id ile route'tan gelen id eşleşmeli
-            if(id != model.Id)
+            if (id != model.Id)
             {
                 return RedirectToAction("Index");
             }
@@ -82,7 +83,7 @@ namespace IdentiyApp.Controllers
             {
                 //valid ise güncellenecek user kaydını veri tabanından al
 
-                var user = await _userManager.FindByIdAsync (model.Id);
+                var user = await _userManager.FindByIdAsync(model.Id);
                 if (user != null)
                 {
                     user.Email = model.Email;
@@ -91,7 +92,7 @@ namespace IdentiyApp.Controllers
                     var result = await _userManager.UpdateAsync(user);
 
                     //if password is not empty -- kullanıcı parolası varsa
-                    if(result.Succeeded && !string.IsNullOrEmpty(model.Password))
+                    if (result.Succeeded && !string.IsNullOrEmpty(model.Password))
                     {
                         //kullanıcının parolasını sil
 
@@ -110,7 +111,21 @@ namespace IdentiyApp.Controllers
                     }
                 }
             }
-            return View(model); 
+            return View(model);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+
+                await _userManager.DeleteAsync(user);
+            }
+
+            return RedirectToAction("Index");
         }
 
     }
