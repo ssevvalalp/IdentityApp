@@ -68,5 +68,42 @@ namespace IdentiyApp.Controllers
             return RedirectToAction("Index");
 
         }
-     }
+
+        [HttpPost]
+        public async Task <IActionResult> Edit(string id, EditViewModel model)
+           
+        {
+            //modelden gelen id ile route'tan gelen id eşleşmeli
+            if(id != model.Id)
+            {
+                return RedirectToAction("Index");
+            }
+            if (ModelState.IsValid)
+            {
+                //valid ise güncellenecek user kaydını veri tabanından al
+
+                var user = await _userManager.FindByIdAsync (model.Id);
+                if (user != null)
+                {
+                    user.Email = model.Email;
+                    user.FullName = model.FullName;
+
+                    var result = await _userManager.UpdateAsync(user);
+
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    foreach (var err in result.Errors)
+                    {
+                        ModelState.AddModelError("", err.Description);
+                    }
+                }
+            }
+            return View(model); 
+        }
+
+    }
 }
