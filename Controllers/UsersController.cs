@@ -90,6 +90,14 @@ namespace IdentiyApp.Controllers
 
                     var result = await _userManager.UpdateAsync(user);
 
+                    //if password is not empty -- kullanıcı parolası varsa
+                    if(result.Succeeded && !string.IsNullOrEmpty(model.Password))
+                    {
+                        //kullanıcının parolasını sil
+
+                        await _userManager.RemovePasswordAsync(user);
+                        await _userManager.AddPasswordAsync(user, model.Password);
+                    }
 
                     if (result.Succeeded)
                     {
