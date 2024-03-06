@@ -15,7 +15,7 @@ namespace IdentiyApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(_roleManager.Roles); //Roles -> IQueryble
         }
         public IActionResult Create()
         {
