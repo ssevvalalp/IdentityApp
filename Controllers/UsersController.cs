@@ -35,7 +35,7 @@ namespace IdentiyApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newUser = new AppUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
+                var newUser = new AppUser { UserName = model.UserName, Email = model.Email, FullName = model.FullName };
 
                 IdentityResult result = await _userManager.CreateAsync(newUser, model.Password);
                 if (result.Succeeded)//true
@@ -76,7 +76,7 @@ namespace IdentiyApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(string id, EditViewModel model)
+        public async Task<IActionResult> Edit(string id, EditViewModel model) //string id -> route üzerinden geliyor
 
         {
             //modelden gelen id ile route'tan gelen id eşleşmeli
