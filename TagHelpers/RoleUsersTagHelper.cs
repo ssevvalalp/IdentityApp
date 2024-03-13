@@ -37,11 +37,22 @@ namespace IdentiyApp.TagHelpers
                     }
                 }
                 //listeye alınan userNames Listesini geriye göndermek
-                output.Content.SetContent(userNames.Count == 0 ? "kullanıcı yok" : string.Join(", ", userNames));
+                output.Content.SetHtmlContent(userNames.Count == 0 ? "kullanıcı yok" : setHtml(userNames));
 
 
             }
 
+        }
+
+        private string setHtml(List<string> userNames)
+        {
+            var html = "<ul>";
+            foreach(var user in userNames)
+            {
+                html += "<li>"+ user + "</li>";
+            }
+            html += "</ul>";
+            return html;
         }
     }
 }
