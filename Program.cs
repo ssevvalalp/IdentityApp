@@ -26,6 +26,18 @@ builder.Services.Configure<IdentityOptions>(options =>
 
     options.User.RequireUniqueEmail = true;
     //options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+});
+
+//Set the Cookie -----------------------
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Acoount/Login"; //changeble
+    options.AccessDeniedPath = "/Account/AccesDenied"; // if logining deniend, go to home or.....
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(15);
 });
 
 var app = builder.Build();
@@ -42,6 +54,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
