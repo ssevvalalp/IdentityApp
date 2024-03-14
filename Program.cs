@@ -34,7 +34,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 //Set the Cookie -----------------------
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Acoount/Login"; //changeble
+    options.LoginPath = "/Account/Login"; //changeble
     options.AccessDeniedPath = "/Account/AccesDenied"; // if logining deniend, go to home or.....
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(15);
