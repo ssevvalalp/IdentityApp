@@ -30,7 +30,7 @@ namespace IdentiyApp.Controllers
                 {
                     await _signInManager.SignOutAsync(); //kullanıcı daha önce giriş yaptıysa tarayıcısından cookie'yi sil
 
-                    if(!await _userManager.IsEmailConfirmedAsync(user))
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
                     {
                         ModelState.AddModelError("", "Hesabınızı onaylayınız");
                         return View(model);
@@ -63,6 +63,63 @@ namespace IdentiyApp.Controllers
                 }
             }
             return View(model);
+        }
+
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var newUser = new AppUser { UserName = model.UserName, Email = model.Email, FullName = model.FullName };
+
+                IdentityResult result = await _userManager.CreateAsync(newUser, model.Password);
+                if (result.Succeeded)//true
+                {
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser); // ilgili kullanıcı için token bilgisi oluşturur
+                    var url = Url.Action("ConfirmEmail","Account", new { newUser.Id ,token }); //{Id = Id , token = token}
+
+                    //email
+                    TempData["message"] = "Email hesabınızdaki onay mailine tıklayınız";
+                    return RedirectToAction("Login","Account");
+                }
+
+                foreach (IdentityError err in result.Errors)
+                {
+                    ModelState.AddModelError("", err.Description);
+                }
+            }
+            return View(model);
+        }
+
+        //urlye tıklandıgında tetiklenecek method
+
+        public async Task<IActionResult>ConfirmEmail(string Id, string token)
+        {
+            if(Id == null || token == null)
+            {
+                TempData["message"] = "Geçersiz token bilgisi";
+                return View();
+            }
+
+            var user = await _userManager.FindByIdAsync(Id);
+
+            if(user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    TempData["message"] = "hesabınız onaylandı";
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            TempData["message"] = "kullanıcı bulunamadı";
+            return View();
         }
     }
 
