@@ -29,8 +29,14 @@ namespace IdentiyApp.Controllers
                 if(user != null)
                 {
                     await _signInManager.SignOutAsync(); //kullanıcı daha önce giriş yaptıysa tarayıcısından cookie'yi sil
-                    //yeni cookie oluştur
 
+                    if(!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError("", "Hesabınızı onaylayınız");
+                        return View(model);
+                    }
+
+                    //yeni cookie oluştur
                     var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true); //PasswordSignInAsync özellikleri
 
                     if(result.Succeeded) //parola doğruysa lockout ayarlarını sıfırla 
