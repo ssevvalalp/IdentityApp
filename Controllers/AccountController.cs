@@ -10,11 +10,14 @@ namespace IdentiyApp.Controllers
         private UserManager<AppUser> _userManager; //<IdentityUser>
         private RoleManager<AppRole> _roleManager;
         private SignInManager<AppUser> _signInManager; //kullanıcı login oldugunda cookie bilgisini gönderir
-        public AccountController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager)
+        private IEmailSender _emailSender;
+        public AccountController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
+           
         }
         public IActionResult Login()
         {
@@ -82,9 +85,11 @@ namespace IdentiyApp.Controllers
                 if (result.Succeeded)//true
                 {
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser); // ilgili kullanıcı için token bilgisi oluşturur
-                    var url = Url.Action("ConfirmEmail","Account", new { newUser.Id ,token }); //{Id = Id , token = token}
+                    var url = Url.Action("ConfirmEmail","Account", new { newUser.Id ,token }); //{Id = Id , token = token} (action methodda bekleyen parametreler)
+                                                                                               //Action       //Controller 
+                                                                                               //email 
+                    await _emailSender.SendEmailAsync(newUser.Email, "Hesap Onayı", $"Lütfen Email hesabınızdaki onay linkine <a href = 'http://localhost:5144{url}'>tıklayın</a>");
 
-                    //email
                     TempData["message"] = "Email hesabınızdaki onay mailine tıklayınız";
                     return RedirectToAction("Login","Account");
                 }
@@ -111,7 +116,7 @@ namespace IdentiyApp.Controllers
 
             if(user != null)
             {
-                var result = await _userManager.ConfirmEmailAsync(user, token);
+                var result = await _userManager.ConfirmEmailAsync(user, token); //dbdeki confirmed 0'dan 1'e cevrılır
                 if (result.Succeeded)
                 {
                     TempData["message"] = "hesabınız onaylandı";
