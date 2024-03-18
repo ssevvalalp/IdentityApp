@@ -1,12 +1,15 @@
 ﻿using IdentiyApp.Models;
 using IdentiyApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+//admin işlemleri
 namespace IdentiyApp.Controllers
 {
-    public class UsersController : Controller
+    [Authorize(Roles = "admin")]
+    public class UsersController : Controller 
     {
 
         //User List 
@@ -20,8 +23,13 @@ namespace IdentiyApp.Controllers
             _roleManager = roleManager;
         }
 
+        [AllowAnonymous] //bir kimlik olmadan
         public IActionResult Index()
         {
+            //if (!User.IsInRole("admin"))
+            //{
+            //    return RedirectToAction("Login","Account");
+            //}
             return View(_userManager.Users);
         }
 
