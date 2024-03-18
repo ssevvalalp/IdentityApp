@@ -12,7 +12,7 @@ builder.Services.AddDbContext<IdentityContext>(
     options => options.UseSqlite(builder.Configuration["ConnectionStrings:SQLite_Connection"]));
 
 //builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
-builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<IdentityContext>();
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();//token üretme özelliği
 
 //Identity Options--------------------
 
@@ -29,6 +29,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
+
+    //kullanıcı hesabını onaylamak zorunda olsun
+    options.SignIn.RequireConfirmedEmail = true;
+
 });
 
 //Set the Cookie -----------------------
